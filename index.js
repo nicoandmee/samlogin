@@ -165,6 +165,11 @@ async function locateDataPath(appName) {
                  ],
   });
 
+  if (process.env.HOME === undefined) {
+    logger.error('No "HOME" env variable could be found!');
+    process.exit();
+  }
+
   const fmtConfigNotFound = 'No configuration file could be found.';
 
   const configPath = await locateConfig(appName, argv)
@@ -178,6 +183,7 @@ async function locateDataPath(appName) {
   const samlUrl = config.samlUrl || 'https://signin.aws.amazon.com/saml';
 
   const browser = await puppeteer.launch({
+    executablePath: `/usr/bin/google-chrome-stable`,
     headless:    false,
     userDataDir: path.join(
                             await locateDataPath(appName),
@@ -200,4 +206,4 @@ async function locateDataPath(appName) {
   await page.goto(new URL(authUrl).href, { timeout: 0 });
   await page.waitForRequest(samlUrl, { timeout: 0 });
   browser.close();
-})();
+})().catch(console.error)
