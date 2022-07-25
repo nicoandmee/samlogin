@@ -179,11 +179,11 @@ async function locateDataPath(appName) {
   });
 
   await page.goto(new URL(authUrl).href, { timeout: 0 });
-  await page.waitForSelector('input[name="email"]', { timeout: 0 });
-
-  await page.type('input[name="email"]', config.Username || 'nico@brokergenius.com');
-  await page.type('input[name="password"]', config.Password || 'VYV_apg7twr@tcf_vpv');
-  await page.click('button[data-automation="loginButton"]');
+  if (await page.$('input[name="email"]')) {
+    await page.type('input[name="email"]', config.Username || 'nico@brokergenius.com');
+    await page.type('input[name="password"]', config.Password || 'VYV_apg7twr@tcf_vpv');
+    await page.click('button[data-automation="loginButton"]');
+  }
 
   await page.waitForRequest(samlUrl, { timeout: 0 });
   browser.close();
