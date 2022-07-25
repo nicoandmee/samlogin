@@ -179,7 +179,8 @@ async function locateDataPath(appName) {
   });
 
   await page.goto(new URL(authUrl).href, { timeout: 0 });
-  if (await page.$('input[name="email"]')) {
+
+  if (await page.waitForSelector('input[name="email"]', { timeout: 5 }).catch(() => false)) {
     await page.type('input[name="email"]', config.Username || 'nico@brokergenius.com');
     await page.type('input[name="password"]', config.Password || 'VYV_apg7twr@tcf_vpv');
     await page.click('button[data-automation="loginButton"]');
